@@ -5,3 +5,5 @@ export async function getClient() {
     await client.connect();
     return client;
 }
+
+//here i have used neondb and made an instance in it online as for just praciticing and understanding this codebase (cloned using git)
