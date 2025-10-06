@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import fs from "fs"
+import fs from 'fs'
 
 const app = new Hono()
 
@@ -11,7 +11,7 @@ app.post('/signup', async(c) => {
     return c.text("Username and password is mandatory!", 400)
   }
 
-  const users = JSON.parse(fs.readFileSync("users.json", "utf-8"))
+  const users = JSON.parse(fs.readFileSync("users.json", "utf-8")) as Array<{username : string, password: string}>
   const exists = users.find((u) => u.username === username); //need to fix this line
 
   if (exists) {
@@ -21,6 +21,27 @@ app.post('/signup', async(c) => {
   users.push({username, password});
   fs.writeFileSync("users.json", JSON.stringify(users));
   return c.text("Singup successfull...")
+})
+
+
+
+
+app.post('/login', async(c) => {
+  const data = await c.req.json();
+  const {username, password} = data;
+
+  if(!username || !password) {
+    return c.text("Username and password is mandatory!", 400)
+  }
+
+  const users = JSON.parse(fs.readFileSync("users.json", "utf-8")) as Array<{username : string, password: string}>
+  const exists = users.find((u) => u.username === username); //need to fix this line
+
+  if (!exists) {
+    return c.text("User does not exist...")
+  }
+
+  return c.text("Login successfull...")
 })
 
 export default app
